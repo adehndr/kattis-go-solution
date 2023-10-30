@@ -16,3 +16,17 @@ func TestInitSetGo(t *testing.T) {
 
 	fmt.Println(aSet.Get())
 }
+
+const letters = "abcdefghijklmnopqrstuvwxyz"
+func TestGenerate(t *testing.T) {
+	lengthLetters := len(letters)
+	for i := 1; i < 2; i++ {
+		j := i
+		var str string
+		for j > 0 {
+			str += string(letters[j % lengthLetters])
+			j /= lengthLetters
+		}
+		fmt.Println(str)
+	}
+}
