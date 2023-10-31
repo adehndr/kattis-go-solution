@@ -30,3 +30,11 @@ func TestGenerate(t *testing.T) {
 		fmt.Println(str)
 	}
 }
+
+func TestAppendArray(t *testing.T) {
+	aTemp := []byte{byte(97), byte(32), byte(98)}
+	fmt.Println(string(aTemp))
+	str := "ade"
+	strByte := str[2]
+	fmt.Println(string(strByte))
+}

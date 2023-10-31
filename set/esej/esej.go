@@ -4,20 +4,49 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 const letters = "abcdefghijklmnopqrstuvwxyz"
+const lengthLetters = 26
 
 func main() {
+	esejOptimized1()
+}
+
+// not sure but with array of byte does not work (Wrong Answer)
+func esejOptimized2() {
 	scanner := bufio.NewScanner(os.Stdin)
 	var min int
 	scanner.Scan()
 	fmt.Sscanf(scanner.Text(), "%d %d", &min, &min)
-	var result string
+	var result []byte
 	for i := 1; i <= min; i++ {
-		result += generateWord(i) + " "
+		result = append(result, generateWord2(i)...)
 	}
-	fmt.Print(result)
+	fmt.Print(string(result))
+}
+
+func generateWord2(n int) []byte {
+	var tmp = make([]byte, n)
+	for n > 0 {
+		tmp = append(tmp, letters[n%lengthLetters])
+		n /= lengthLetters
+	}
+	tmp = append(tmp, byte(32))
+	return tmp
+}
+
+func esejOptimized1() {
+	scanner := bufio.NewScanner(os.Stdin)
+	var min int
+	scanner.Scan()
+	fmt.Sscanf(scanner.Text(), "%d %d", &min, &min)
+	var result strings.Builder
+	for i := 1; i <= min; i++ {
+		result.WriteString(generateWord(i) + " ")
+	}
+	fmt.Print(result.String())
 }
 
 func generateWord(n int) string {
