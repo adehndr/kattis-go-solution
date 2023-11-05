@@ -52,3 +52,11 @@ func TestMapWithinAMap(t *testing.T) {
 		bMap[0] = append(bMap[0], )
 	}
 }
+
+func TestAppendArray(t *testing.T) {
+	aTemp := []byte{byte(97), byte(32), byte(98)}
+	fmt.Println(string(aTemp))
+	str := "ade"
+	strByte := str[2]
+	fmt.Println(string(strByte))
+}
