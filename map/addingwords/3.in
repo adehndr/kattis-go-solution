@@ -1,0 +1,10 @@
+def ade 10
+def hendra 5
+calc ade + hendra =
+def setiawan 15
+calc ade + hendra =
+clear
+def ade 2
+def setiawan 4
+calc ade + ade =
+clear

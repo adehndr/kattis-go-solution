@@ -1,0 +1,6 @@
+def foo 3
+def bar 4
+def foobar 7
+calc foo + bar =
+calc foo + bar + foobar =
+clear
