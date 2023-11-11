@@ -8,6 +8,9 @@ import (
 	"strings"
 )
 
+// edge cases
+// when input only calc. such as calc a =
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -16,55 +19,69 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		tmpList := strings.Split(line, " ")
+		// when defining the key and value, don't forget to delete the old one
+		// def ADE 12
+		// def ADE 15
+		// if using this logic, it will create a 2 key
+		// ADE -> 12, 12 -> ADE
+		// so if ade contains in the word to int,
+		// delete the ADE -> 12, and 12 -> ADE
 		if strings.Contains(line, "def") {
 			resultConv, _ := strconv.ParseInt(tmpList[2], 10, 64)
+			tempValueMapWordToInt, ok := mapWordToInt[tmpList[1]]
+			if ok {
+				delete(mapWordToInt, tmpList[1])
+			}
+			if _, ok := mapIntToWord[tempValueMapWordToInt]; ok {
+				delete(mapIntToWord, tempValueMapWordToInt)
+			}
+
 			mapIntToWord[int(resultConv)] = tmpList[1]
 			mapWordToInt[tmpList[1]] = int(resultConv)
 		} else if strings.Contains(line, "calc") {
-			validateInput := []string{}
-			for i, v := range tmpList {
-				if i > 0 && i%2 != 0 {
-					if _, ok := mapWordToInt[v]; ok {
-						validateInput = append(validateInput,
-							strconv.FormatInt(int64(mapWordToInt[v]), 10))
+			var innerResult int
+			var innerOp string
+			var flag bool = true
+		out:
+			for i := 0; i < len(tmpList[1:])-1; i++ {
+				if i%2 == 0 {
+					// check if unknown or not
+					var tempV int
+					tempV, ok := mapWordToInt[tmpList[1+i]]
+					if !ok {
+						flag = false
+						break out
+					}
+					if i == 0 {
+						innerResult = int(tempV)
 					} else {
-						validateInput = append(validateInput, "-1001")
+						switch innerOp {
+						case "+":
+							innerResult += int(tempV)
+						default:
+							innerResult -= int(tempV)
+						}
+						innerOp = ""
 					}
-				} else if i > 0 && i%2 == 0 {
-					validateInput = append(validateInput, v)
+				} else {
+					innerOp = tmpList[1+i]
 				}
 			}
-			flag := false
-			for _, v := range validateInput {
-				if v == "-1001" {
-					fmt.Println(strings.Join(tmpList[1:], " "), "unknown")
-					flag = true
-				}
-			}
+			lastOutput := strings.Join(tmpList[1:], " ")
 			if flag {
-				continue
-			}
-			var result int
-			for i, v := range validateInput {
-				if i == 0 {
-					res, _ := strconv.ParseInt(v, 10, 64)
-					result = int(res)
-				} else if i%2 == 0 {
-					res, _ := strconv.ParseInt(v, 10, 64)
-					switch validateInput[i-1] {
-					case "+":
-						result += int(res)
-					default:
-						result -= int(res)
-					}
+				// if result not exist
+				if v, ok := mapIntToWord[innerResult]; ok {
+					lastOutput += " " + v
+				} else {
+					lastOutput += " unknown"
 				}
+			} else {
+				// unknown
+				lastOutput += " unknown"
 			}
-			if v, ok := mapIntToWord[result];ok {
-				fmt.Println(strings.Join(tmpList[1:], " "), v)
-			}else {
-				fmt.Println(strings.Join(tmpList[1:], " "), "unknown")
-			}
+			fmt.Println(lastOutput)
 		} else {
+			// clear
 			mapWordToInt = map[string]int{}
 			mapIntToWord = map[int]string{}
 		}

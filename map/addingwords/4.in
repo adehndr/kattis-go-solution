@@ -1,0 +1,12 @@
+def ade 10
+def ade 20
+calc ade + ade =
+calc ade =
+def a 1
+def b 2
+def c 3
+calc a + b =
+calc c - b =
+def b 4
+calc c - a =
+calc a + a + a + a =

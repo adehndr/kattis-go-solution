@@ -4,3 +4,6 @@ def foobar 7
 calc foo + bar =
 calc foo + bar + foobar =
 clear
+def bar 10
+calc bar =
+calc a =
