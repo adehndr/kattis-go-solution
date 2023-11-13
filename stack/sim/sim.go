@@ -8,30 +8,30 @@ import (
 )
 
 type stack struct {
-	data    []string
-	pointer bool // false -> left, true -> right
+	leftData  []string
+	rightData []string
+	pointer   bool // false -> left, true -> right
 }
 
 func (s *stack) delete() {
-	if len(s.data) == 0 {
-		return
-	}
-
 	if s.pointer {
-		s.data = s.data[:len(s.data)-1]
+		if len(s.rightData) == 0 {
+			return
+		}
+		s.rightData = s.rightData[:len(s.rightData)-1]
 	} else {
-		s.data = s.data[1:]
+		if len(s.leftData) == 0 {
+			return
+		}
+		s.leftData = s.leftData[:len(s.leftData)-1]
 	}
 }
 
 func (s *stack) push(input string) {
 	if s.pointer {
-		s.data = append(s.data, input)
+		s.rightData = append(s.rightData, input)
 	} else {
-		// should change this logic
-		// original = "AB", append C and D
-		// it should be CDAB not DCAB
-		s.data = append([]string{input}, s.data...)
+		s.leftData = append(s.leftData, input)
 	}
 }
 
@@ -45,13 +45,21 @@ func (s *stack) leftP() {
 
 func initStack() *stack {
 	return &stack{
-		data:    nil,
-		pointer: true,
+		leftData:  make([]string, 0),
+		rightData: make([]string, 0),
+		pointer:   true,
 	}
 }
 
+func (s *stack) merge() {
+	s.rightData = append(s.leftData, s.rightData...)
+	s.leftData = make([]string, 0)
+}
+
 func (s *stack) joining() string {
-	return strings.Join(s.data, "")
+	total := s.leftData
+	total = append(total, s.rightData...)
+	return strings.Join(total, "")
 }
 
 const operator = "[]<"
@@ -69,8 +77,10 @@ func main() {
 			if strings.Contains(operator, string(v)) {
 				switch string(v) {
 				case "[":
+					aStack.merge()
 					aStack.leftP()
 				case "]":
+					aStack.merge()
 					aStack.rightP()
 				default:
 					aStack.delete()
@@ -79,6 +89,6 @@ func main() {
 				aStack.push(string(v))
 			}
 		}
-		fmt.Print(aStack.joining())
+		fmt.Println(aStack.joining())
 	}
 }
